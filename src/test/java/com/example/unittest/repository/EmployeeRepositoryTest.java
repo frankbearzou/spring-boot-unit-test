@@ -62,4 +62,17 @@ class EmployeeRepositoryTest {
 
         assertThat(employee.getId()).isGreaterThan(0);
     }
+
+    @Test
+    public void givenEmployeeEmail_whenFindByEmail_thenReturnEmployee() {
+        Employee emp = new Employee();
+        emp.setFirstName("Adam");
+        emp.setLastName("Smith");
+        emp.setEmail("adam@abc.com");
+        employeeRepository.save(emp);
+
+        Employee employee = employeeRepository.findByEmail(emp.getEmail()).get();
+
+        assertThat(employee).isNotNull();
+    }
 }
