@@ -75,4 +75,21 @@ class EmployeeRepositoryTest {
 
         assertThat(employee).isNotNull();
     }
+
+    @Test
+    public void givenEmployee_whenUpdate_thenReturnUpdatedEmployee() {
+        Employee emp = new Employee();
+        emp.setFirstName("Adam");
+        emp.setLastName("Smith");
+        emp.setEmail("adam@abc.com");
+        employeeRepository.save(emp);
+
+        Employee employee = employeeRepository.findByEmail(emp.getEmail()).get();
+        employee.setLastName("Doe");
+        employee.setEmail("adam.doe@gmail.com");
+        Employee saved = employeeRepository.save(employee);
+
+        assertThat(saved.getLastName()).isEqualTo("Doe");
+        assertThat(saved.getEmail()).isEqualTo("adam.doe@gmail.com");
+    }
 }
