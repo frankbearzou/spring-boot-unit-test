@@ -1,6 +1,6 @@
-package com.example.springboot3.repository;
+package com.example.unittest.repository;
 
-import com.example.springboot3.entity.Employee;
+import com.example.unittest.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {

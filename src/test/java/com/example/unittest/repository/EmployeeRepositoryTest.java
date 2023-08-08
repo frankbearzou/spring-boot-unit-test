@@ -1,13 +1,11 @@
-package com.example.springboot3.repository;
+package com.example.unittest.repository;
 
-import com.example.springboot3.entity.Employee;
+import com.example.unittest.entity.Employee;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
 
 @DataJpaTest
 class EmployeeRepositoryTest {

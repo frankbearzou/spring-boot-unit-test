@@ -1,4 +1,4 @@
-package com.example.springboot3.entity;
+package com.example.unittest.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
