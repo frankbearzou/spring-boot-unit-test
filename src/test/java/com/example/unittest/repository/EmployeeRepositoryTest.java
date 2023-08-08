@@ -1,6 +1,7 @@
 package com.example.unittest.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.example.unittest.entity.Employee;
 import org.junit.jupiter.api.Test;
@@ -91,5 +92,19 @@ class EmployeeRepositoryTest {
 
         assertThat(saved.getLastName()).isEqualTo("Doe");
         assertThat(saved.getEmail()).isEqualTo("adam.doe@gmail.com");
+    }
+
+    @Test
+    public void givenEmployee_whenDelete_thenRemoveEmployee() {
+        Employee emp = new Employee();
+        emp.setFirstName("Adam");
+        emp.setLastName("Smith");
+        emp.setEmail("adam@abc.com");
+        employeeRepository.save(emp);
+
+        employeeRepository.delete(emp);
+
+        Optional<Employee> employee = employeeRepository.findById(emp.getId());
+        assertThat(employee).isEmpty();
     }
 }
