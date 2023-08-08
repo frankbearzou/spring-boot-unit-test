@@ -1,1 +1,1 @@
-rootProject.name = "springboot3"
+rootProject.name = "spring-boot-unit-test"
