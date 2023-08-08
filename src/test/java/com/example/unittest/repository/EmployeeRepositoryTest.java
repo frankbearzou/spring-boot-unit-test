@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 class EmployeeRepositoryTest {
@@ -22,7 +22,7 @@ class EmployeeRepositoryTest {
         employee.setLastName("Smith");
         employee.setEmail("adam@abc.com");
 
-        Employee saved = employeeRepository.saveAndFlush(employee);
+        Employee saved = employeeRepository.save(employee);
 
         assertThat(saved.getId()).isGreaterThan(0);
     }
@@ -47,5 +47,19 @@ class EmployeeRepositoryTest {
         // then
         List<Employee> employeeList = employeeRepository.findAll();
         assertThat(employeeList).hasSize(2);
+    }
+
+    @Test
+    public void givenEmployee_whenFindById_thenReturnEmployee() {
+        Employee emp = new Employee();
+        emp.setFirstName("Adam");
+        emp.setLastName("Smith");
+        emp.setEmail("adam@abc.com");
+
+        Employee saved = employeeRepository.save(emp);
+
+        Employee employee = employeeRepository.findById(saved.getId()).get();
+
+        assertThat(employee.getId()).isGreaterThan(0);
     }
 }
