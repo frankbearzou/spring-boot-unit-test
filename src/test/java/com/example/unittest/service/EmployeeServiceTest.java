@@ -111,4 +111,15 @@ class EmployeeServiceTest {
 
         assertThat(emp).isEmpty();
     }
+
+    @Test
+    public void givenEmployee_whenUpdateEmployee_thenReturnUpdatedEmployee() {
+        given(employeeRepository.save(any(Employee.class))).willReturn(employee);
+
+        Employee updatedEmployee = employeeService.updateEmployee(employee);
+
+        then(employeeRepository).should().save(any(Employee.class));
+
+        assertThat(updatedEmployee).isNotNull();
+    }
 }
