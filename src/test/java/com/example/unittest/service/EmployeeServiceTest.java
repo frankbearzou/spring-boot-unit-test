@@ -122,4 +122,13 @@ class EmployeeServiceTest {
 
         assertThat(updatedEmployee).isNotNull();
     }
+
+    @Test
+    public void givenEmployeeId_whenDeleteEmployee_thenEmployeeDeleted() {
+        willDoNothing().given(employeeRepository).deleteById(anyInt());
+
+        employeeService.deleteEmployee(anyInt());
+
+        then(employeeRepository).should().deleteById(anyInt());
+    }
 }

@@ -24,7 +24,7 @@ public class EmployeeService {
         return employeeRepository.findById(id);
     }
 
-    Employee saveEmployee(Employee employee) {
+    public Employee saveEmployee(Employee employee) {
         Optional<Employee> employeeOptional = employeeRepository.findByEmail(employee.getEmail());
         if (employeeOptional.isPresent()) {
             throw new ResourceNotFoundException("email " + employee.getEmail() + " exist");
@@ -32,7 +32,11 @@ public class EmployeeService {
         return employeeRepository.save(employee);
     }
 
-    Employee updateEmployee(Employee employee) {
+    public Employee updateEmployee(Employee employee) {
         return employeeRepository.save(employee);
+    }
+
+    public void deleteEmployee(int id) {
+        employeeRepository.deleteById(id);
     }
 }
