@@ -89,4 +89,26 @@ class EmployeeServiceTest {
 
         assertThat(employeeList).isEmpty();
     }
+
+    @Test
+    public void givenEmployeeId_whenFindById_thenReturnFoundEmployee() {
+        given(employeeRepository.findById(anyInt())).willReturn(Optional.of(employee));
+
+        Optional<Employee> emp = employeeService.findById(anyInt());
+
+        then(employeeRepository).should().findById(anyInt());
+
+        assertThat(emp).isNotEmpty();
+    }
+
+    @Test
+    public void givenNonExistingEmployeeId_whenFindById_thenReturnEmpty() {
+        given(employeeRepository.findById(anyInt())).willReturn(Optional.empty());
+
+        Optional<Employee> emp = employeeService.findById(anyInt());
+
+        then(employeeRepository).should().findById(anyInt());
+
+        assertThat(emp).isEmpty();
+    }
 }

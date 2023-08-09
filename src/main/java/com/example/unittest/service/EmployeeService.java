@@ -20,6 +20,10 @@ public class EmployeeService {
         return employeeRepository.findAll();
     }
 
+    public Optional<Employee> findById(int id) {
+        return employeeRepository.findById(id);
+    }
+
     Employee saveEmployee(Employee employee) {
         Optional<Employee> employeeOptional = employeeRepository.findByEmail(employee.getEmail());
         if (employeeOptional.isPresent()) {
