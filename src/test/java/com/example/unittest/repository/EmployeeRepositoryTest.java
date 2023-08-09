@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.unittest.entity.Employee;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -16,13 +17,18 @@ class EmployeeRepositoryTest {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    @Test
-    public void givenEmployeeObject_whenSave_thenReturnSavedEmployee() {
-        Employee employee = new Employee();
+    private Employee employee;
+
+    @BeforeEach
+    public void setupEmployee() {
+        employee = new Employee();
         employee.setFirstName("Adam");
         employee.setLastName("Smith");
         employee.setEmail("adam@abc.com");
+    }
 
+    @Test
+    public void givenEmployeeObject_whenSave_thenReturnSavedEmployee() {
         Employee saved = employeeRepository.save(employee);
 
         assertThat(saved.getId()).isGreaterThan(0);
@@ -31,18 +37,13 @@ class EmployeeRepositoryTest {
     @Test
     public void givenTwoEmployees_whenFindAll_thenReturnEmployeeList() {
         // given
-        Employee emp1 = new Employee();
-        emp1.setFirstName("Adam");
-        emp1.setLastName("Smith");
-        emp1.setEmail("adam@abc.com");
-
         Employee emp2 = new Employee();
         emp2.setFirstName("Bob");
         emp2.setLastName("Doe");
         emp2.setEmail("bob@abc.com");
 
         // when
-        employeeRepository.save(emp1);
+        employeeRepository.save(employee);
         employeeRepository.save(emp2);
 
         // then
@@ -52,43 +53,30 @@ class EmployeeRepositoryTest {
 
     @Test
     public void givenEmployee_whenFindById_thenReturnEmployee() {
-        Employee emp = new Employee();
-        emp.setFirstName("Adam");
-        emp.setLastName("Smith");
-        emp.setEmail("adam@abc.com");
+        Employee saved = employeeRepository.save(employee);
 
-        Employee saved = employeeRepository.save(emp);
+        Employee emp = employeeRepository.findById(saved.getId()).get();
 
-        Employee employee = employeeRepository.findById(saved.getId()).get();
-
-        assertThat(employee.getId()).isGreaterThan(0);
+        assertThat(emp.getId()).isGreaterThan(0);
     }
 
     @Test
     public void givenEmployeeEmail_whenFindByEmail_thenReturnEmployee() {
-        Employee emp = new Employee();
-        emp.setFirstName("Adam");
-        emp.setLastName("Smith");
-        emp.setEmail("adam@abc.com");
-        employeeRepository.save(emp);
+        employeeRepository.save(employee);
 
-        Employee employee = employeeRepository.findByEmail(emp.getEmail()).get();
+        Employee emp = employeeRepository.findByEmail("adam@abc.com").get();
 
-        assertThat(employee).isNotNull();
+        assertThat(emp).isNotNull();
     }
 
     @Test
     public void givenEmployee_whenUpdate_thenReturnUpdatedEmployee() {
-        Employee emp = new Employee();
-        emp.setFirstName("Adam");
-        emp.setLastName("Smith");
-        emp.setEmail("adam@abc.com");
-        employeeRepository.save(emp);
+        employeeRepository.save(employee);
 
-        Employee employee = employeeRepository.findByEmail(emp.getEmail()).get();
-        employee.setLastName("Doe");
-        employee.setEmail("adam.doe@gmail.com");
-        Employee saved = employeeRepository.save(employee);
+        Employee emp = employeeRepository.findByEmail("adam@abc.com").get();
+        emp.setLastName("Doe");
+        emp.setEmail("adam.doe@gmail.com");
+        Employee saved = employeeRepository.save(emp);
 
         assertThat(saved.getLastName()).isEqualTo("Doe");
         assertThat(saved.getEmail()).isEqualTo("adam.doe@gmail.com");
@@ -96,34 +84,21 @@ class EmployeeRepositoryTest {
 
     @Test
     public void givenEmployee_whenDelete_thenRemoveEmployee() {
-        Employee emp = new Employee();
-        emp.setFirstName("Adam");
-        emp.setLastName("Smith");
-        emp.setEmail("adam@abc.com");
-        employeeRepository.save(emp);
+        employeeRepository.save(employee);
+        int id = employee.getId();
 
-        employeeRepository.delete(emp);
+        employeeRepository.delete(employee);
 
-        Optional<Employee> employee = employeeRepository.findById(emp.getId());
+        Optional<Employee> employee = employeeRepository.findById(id);
         assertThat(employee).isEmpty();
     }
 
     @Test
     public void givenFirstNameAndLastName_whenFindByName_thenReturnEmployee() {
-        Employee employee = getEmployee();
         employeeRepository.save(employee);
 
         Employee emp = employeeRepository.findByName("Adam", "Smith");
 
         assertThat(emp).isNotNull();
-    }
-
-    Employee getEmployee() {
-        Employee emp = new Employee();
-        emp.setFirstName("Adam");
-        emp.setLastName("Smith");
-        emp.setEmail("adam@abc.com");
-
-        return emp;
     }
 }
