@@ -3,6 +3,7 @@ package com.example.unittest.service;
 import java.util.Optional;
 
 import com.example.unittest.entity.Employee;
+import com.example.unittest.exception.ResourceNotFoundException;
 import com.example.unittest.repository.EmployeeRepository;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,5 +47,14 @@ class EmployeeServiceTest {
         then(employeeRepository).should().save(employee);
 
         assertThat(savedEmployee).isNotNull();
+    }
+
+    @Test
+    public void givenExistingEmail_whenSaveEmployee_thenThrowException() {
+        given(employeeRepository.findByEmail(employee.getEmail())).willReturn(Optional.of(employee));
+
+        assertThrows(ResourceNotFoundException.class, () -> employeeService.saveEmployee(employee));
+
+        then(employeeRepository).should(never()).save(any(Employee.class));
     }
 }
