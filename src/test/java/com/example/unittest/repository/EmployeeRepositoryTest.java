@@ -107,4 +107,23 @@ class EmployeeRepositoryTest {
         Optional<Employee> employee = employeeRepository.findById(emp.getId());
         assertThat(employee).isEmpty();
     }
+
+    @Test
+    public void givenFirstNameAndLastName_whenFindByName_thenReturnEmployee() {
+        Employee employee = getEmployee();
+        employeeRepository.save(employee);
+
+        Employee emp = employeeRepository.findByName("Adam", "Smith");
+
+        assertThat(emp).isNotNull();
+    }
+
+    Employee getEmployee() {
+        Employee emp = new Employee();
+        emp.setFirstName("Adam");
+        emp.setLastName("Smith");
+        emp.setEmail("adam@abc.com");
+
+        return emp;
+    }
 }
