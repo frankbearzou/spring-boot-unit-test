@@ -5,6 +5,7 @@ import com.example.unittest.exception.ResourceNotFoundException;
 import com.example.unittest.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -13,6 +14,10 @@ public class EmployeeService {
 
     public EmployeeService(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
+    }
+
+    public List<Employee> FindAllEmployees() {
+        return employeeRepository.findAll();
     }
 
     Employee saveEmployee(Employee employee) {

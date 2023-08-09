@@ -1,5 +1,6 @@
 package com.example.unittest.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.example.unittest.entity.Employee;
@@ -27,6 +28,7 @@ class EmployeeServiceTest {
     private EmployeeService employeeService;
 
     private Employee employee;
+    private Employee employee1;
 
     @BeforeEach
     public void setupEmployee() {
@@ -34,6 +36,14 @@ class EmployeeServiceTest {
         employee.setFirstName("John");
         employee.setLastName("Doe");
         employee.setEmail("john.doe@abc.com");
+    }
+
+    @BeforeEach
+    public void setupEmployee1() {
+        employee1 = new Employee();
+        employee1.setFirstName("Joe");
+        employee1.setLastName("Dow");
+        employee1.setEmail("joe.dow@abc.com");
     }
 
     @Test
@@ -56,5 +66,27 @@ class EmployeeServiceTest {
         assertThrows(ResourceNotFoundException.class, () -> employeeService.saveEmployee(employee));
 
         then(employeeRepository).should(never()).save(any(Employee.class));
+    }
+
+    @Test
+    public void givenEmployeeList_whenFindAllEmployees_thenReturnEmployeeList() {
+        given(employeeRepository.findAll()).willReturn(List.of(employee, employee1));
+
+        List<Employee> employeeList = employeeService.FindAllEmployees();
+
+        then(employeeRepository).should().findAll();
+
+        assertThat(employeeList).isEqualTo(List.of(employee, employee1));
+    }
+
+    @Test
+    public void givenEmptyEmployeeList_whenFindAllEmployees_thenReturnEmptyEmployeeList() {
+        given(employeeRepository.findAll()).willReturn(List.of());
+
+        List<Employee> employeeList = employeeService.FindAllEmployees();
+
+        then(employeeRepository).should().findAll();
+
+        assertThat(employeeList).isEmpty();
     }
 }
