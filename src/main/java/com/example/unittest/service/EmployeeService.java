@@ -16,7 +16,7 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
-    public List<Employee> FindAllEmployees() {
+    public List<Employee> findAllEmployees() {
         return employeeRepository.findAll();
     }
 

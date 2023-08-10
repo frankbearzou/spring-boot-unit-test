@@ -72,7 +72,7 @@ class EmployeeServiceTest {
     public void givenEmployeeList_whenFindAllEmployees_thenReturnEmployeeList() {
         given(employeeRepository.findAll()).willReturn(List.of(employee, employee1));
 
-        List<Employee> employeeList = employeeService.FindAllEmployees();
+        List<Employee> employeeList = employeeService.findAllEmployees();
 
         then(employeeRepository).should().findAll();
 
@@ -83,7 +83,7 @@ class EmployeeServiceTest {
     public void givenEmptyEmployeeList_whenFindAllEmployees_thenReturnEmptyEmployeeList() {
         given(employeeRepository.findAll()).willReturn(List.of());
 
-        List<Employee> employeeList = employeeService.FindAllEmployees();
+        List<Employee> employeeList = employeeService.findAllEmployees();
 
         then(employeeRepository).should().findAll();
 

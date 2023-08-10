@@ -1,5 +1,7 @@
 package com.example.unittest.controller;
 
+import java.util.List;
+
 import com.example.unittest.entity.Employee;
 import com.example.unittest.service.EmployeeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,6 +34,7 @@ class EmployeeControllerTest {
     private ObjectMapper objectMapper;
 
     private Employee employee;
+    private Employee employee1;
 
     @BeforeEach
     public void setupEmployee() {
@@ -40,10 +43,34 @@ class EmployeeControllerTest {
         employee.setLastName("Doe");
         employee.setEmail("john.doe@abc.com");
     }
+    @BeforeEach
+    public void setupEmployee1() {
+        employee1 = new Employee();
+        employee1.setFirstName("Joe");
+        employee1.setLastName("Dow");
+        employee1.setEmail("jone.doe@abc.net");
+    }
+
 
     @BeforeEach
     public void setupObjectMapper() {
         objectMapper = new ObjectMapper();
+    }
+
+    @Test
+    public void givenEmployeeList_whenGetAllEmployee_thenReturnAllEmployee() throws Exception {
+        given(employeeService.findAllEmployees()).willReturn(List.of(employee, employee1));
+
+        ResultActions response = mockMvc.perform(get("/api/employee"));
+
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()", is(2)))
+                .andExpect(jsonPath("$.[0].firstName", is(employee.getFirstName())))
+                .andExpect(jsonPath("$.[0].lastName", is(employee.getLastName())))
+                .andExpect(jsonPath("$.[0].email", is(employee.getEmail())))
+                .andExpect(jsonPath("$.[1].firstName", is(employee1.getFirstName())))
+                .andExpect(jsonPath("$.[1].lastName", is(employee1.getLastName())))
+                .andExpect(jsonPath("$.[1].email", is(employee1.getEmail())));
     }
 
     @Test
