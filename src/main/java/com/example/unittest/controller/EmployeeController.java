@@ -33,4 +33,15 @@ public class EmployeeController {
     public Employee createEmployee(@RequestBody Employee employee) {
         return employeeService.saveEmployee(employee);
     }
+
+    @PutMapping("/{employeeId}")
+    public ResponseEntity<Employee> updateEmployee(@PathVariable int employeeId, @RequestBody Employee employee) {
+        return employeeService.findById(employeeId)
+                .map(emp -> {
+                    emp.setFirstName(employee.getFirstName());
+                    emp.setLastName(employee.getLastName());
+                    emp.setEmail(employee.getEmail());
+                    return ResponseEntity.ok(employeeService.updateEmployee(emp));
+                }).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }
