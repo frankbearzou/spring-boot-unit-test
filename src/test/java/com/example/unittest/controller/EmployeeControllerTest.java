@@ -1,6 +1,7 @@
 package com.example.unittest.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.example.unittest.entity.Employee;
 import com.example.unittest.service.EmployeeService;
@@ -71,6 +72,30 @@ class EmployeeControllerTest {
                 .andExpect(jsonPath("$.[1].firstName", is(employee1.getFirstName())))
                 .andExpect(jsonPath("$.[1].lastName", is(employee1.getLastName())))
                 .andExpect(jsonPath("$.[1].email", is(employee1.getEmail())));
+    }
+
+    @Test
+    public void givenExistingEmployeeId_whenFindEmployById_thenReturnEmployee() throws Exception {
+        int employeeId = 1;
+        employee.setId(employeeId);
+        given(employeeService.findById(employeeId)).willReturn(Optional.of(employee));
+
+        ResultActions response = mockMvc.perform(get("/api/employee/{id}", employeeId));
+
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(employeeId)))
+                .andExpect(jsonPath("$.firstName", is(employee.getFirstName())))
+                .andExpect(jsonPath("$.lastName", is(employee.getLastName())))
+                .andExpect(jsonPath("$.email", is(employee.getEmail())));
+    }
+
+    @Test
+    public void givenNonExistingEmployeeId_whenFindEmployeeById_thenReturnEmpty() throws Exception {
+        int employeeId = 1;
+        given(employeeService.findById(employeeId)).willReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/employee/{id}", employeeId))
+                .andExpect(status().isNotFound());
     }
 
     @Test
