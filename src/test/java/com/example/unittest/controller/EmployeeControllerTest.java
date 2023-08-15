@@ -116,4 +116,21 @@ class EmployeeControllerTest {
                 .andExpect(jsonPath("$.lastName", is(employee.getLastName())))
                 .andExpect(jsonPath("$.email", is(employee.getEmail())));
     }
+
+    @Test
+    public void givenEmployee_whenUpdate_whenReturnUpdatedEmployee() throws Exception {
+        int employeeId = 1;
+
+        given(employeeService.findById(employeeId)).willReturn(Optional.of(employee));
+        given(employeeService.updateEmployee(any(Employee.class))).willAnswer(invocation -> invocation.getArgument(0, Employee.class));
+
+        mockMvc.perform(
+                put("/api/employee/{id}", employeeId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(employee1))
+        ).andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName", is(employee1.getFirstName())))
+                .andExpect(jsonPath("$.lastName", is(employee1.getLastName())))
+                .andExpect(jsonPath("$.email", is(employee1.getEmail())));
+    }
 }
