@@ -118,7 +118,7 @@ class EmployeeControllerTest {
     }
 
     @Test
-    public void givenEmployee_whenUpdate_whenReturnUpdatedEmployee() throws Exception {
+    public void givenEmployee_whenUpdate_thenReturnUpdatedEmployee() throws Exception {
         int employeeId = 1;
 
         given(employeeService.findById(employeeId)).willReturn(Optional.of(employee));
@@ -132,5 +132,20 @@ class EmployeeControllerTest {
                 .andExpect(jsonPath("$.firstName", is(employee1.getFirstName())))
                 .andExpect(jsonPath("$.lastName", is(employee1.getLastName())))
                 .andExpect(jsonPath("$.email", is(employee1.getEmail())));
+    }
+
+    @Test
+    public void givenNonExistingEmployeeId_whenUpdate_thenReturn404() throws Exception {
+        int employeeId = 1;
+
+        given(employeeService.findById(employeeId)).willReturn(Optional.empty());
+
+        ResultActions reponse = mockMvc.perform(
+                put("/api/employee/{id}", employeeId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(employee)));
+        reponse.andExpect(status().isNotFound());
+
+        then(employeeService).should(never()).updateEmployee(any(Employee.class));
     }
 }
