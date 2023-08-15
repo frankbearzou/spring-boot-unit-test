@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -147,5 +148,17 @@ class EmployeeControllerTest {
         reponse.andExpect(status().isNotFound());
 
         then(employeeService).should(never()).updateEmployee(any(Employee.class));
+    }
+
+    @Test
+    public void givenEmployeeId_whenDeleteEmployee_thenReturnOk() throws Exception {
+        int employeeId = 1;
+        willDoNothing().given(employeeService).deleteEmployee(anyInt());
+
+        mockMvc.perform(delete("/api/employee/{id}", employeeId))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("success")));
+
+        then(employeeService).should().deleteEmployee(employeeId);
     }
 }
