@@ -79,4 +79,47 @@ public class EmployeeControllerIT {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()", is(employeeList.size())));
     }
+
+    @Test
+    public void givenEmployee_whenFindById_thenReturnFoundEmployee() throws Exception {
+        employeeRepository.save(employee);
+
+        mockMvc.perform(get("/api/employee/{id}", employee.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", greaterThan(0)))
+                .andExpect(jsonPath("$.firstName", is(employee.getFirstName())))
+                .andExpect(jsonPath("$.lastName", is(employee.getLastName())))
+                .andExpect(jsonPath("$.email", is(employee.getEmail())));
+    }
+
+    @Test
+    public void givenNonExistingEmployee_whenFindById_thenReturnNotFound404() throws Exception {
+        employeeRepository.save(employee);
+
+        mockMvc.perform(get("/api/employee/{id}", employee.getId() + 10))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void givenEmployee_whenUpdate_thenReturnUpdatedEmployee() throws Exception {
+        employeeRepository.save(employee);
+
+        mockMvc.perform(
+                put("/api/employee/{id}", employee.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(employee1))
+        ).andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName", is(employee1.getFirstName())))
+                .andExpect(jsonPath("$.lastName", is(employee1.getLastName())))
+                .andExpect(jsonPath("$.email", is(employee1.getEmail())));
+    }
+
+    @Test
+    public void givenNonExistingEmployeeId_whenUpdateEmployee_thenReturnNotFound404() throws Exception {
+        int nonExistingEmployeeId = 404;
+        mockMvc.perform(put("/api/employee/{id}", nonExistingEmployeeId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(employee1))
+        ).andExpect(status().isNotFound());
+    }
 }
